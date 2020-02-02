@@ -17,5 +17,5 @@ PROJ_OBJ += sensors_bmi088_spi_bmp388.o
 
 ######### Stabilizer configuration ##########
 ESTIMATOR          ?= any
-CONTROLLER         ?= Any # one of Any, PID, Mellinger, INDI
+CONTROLLER         ?= CCI # one of Any, PID, Mellinger, INDI, CCI
 POWER_DISTRIBUTION ?= stock
