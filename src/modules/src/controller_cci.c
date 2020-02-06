@@ -5,7 +5,11 @@
 #include "attitude_controller_ca.h"
 #include "sensfusion6.h"
 #include "position_controller.h"
-#include "controller_pid.h"
+#include "controller_cci.h"
+
+#include <casadi/mem.h>
+#include <gen/f_control.h>
+
 
 #include "log.h"
 #include "param.h"
@@ -28,6 +32,8 @@ static float r_pitch;
 static float r_yaw;
 static float accelz;
 
+casadi_mem *att_ctrl_mem = 0;
+float i_climbr_err = 0;
 
 void controllerCCIInit(void)
 {
@@ -39,7 +45,7 @@ bool controllerCCITest(void)
 {
   bool pass = true;
 
-  pass &= attitudeControllerTest();
+  // pass &= attitudeControllerTest();
 
   return pass;
 }
@@ -76,6 +82,8 @@ void controllerCCI(control_t *control, setpoint_t *setpoint,
     attitudeDesired.pitch = setpoint->attitude.pitch;
     actuatorThrust = setpoint->thrust;
 
+    att_ctrl_mem = casadi_alloc(f_control_functions);
+
     float u_cmd[4] = {
       attitudeDesired.roll,
       attitudeDesired.pitch,
@@ -111,8 +119,31 @@ void controllerCCI(control_t *control, setpoint_t *setpoint,
      	10     	//ki_climbr
 	  };
 
-    
+    float u_control[4];
+    float dt = ATTITUDE_UPDATE_DT;
 
+    att_ctrl_mem->arg[0] = quat;
+    att_ctrl_mem->arg[1] = omega_b;
+    att_ctrl_mem->arg[2] = v_n;
+    att_ctrl_mem->arg[3] = u_cmd;
+    att_ctrl_mem->arg[4] = &i_climbr_err;
+    att_ctrl_mem->arg[5] = gains;
+    att_ctrl_mem->arg[6] = &dt;
+    att_ctrl_mem->res[0] = u_control;
+    att_ctrl_mem->res[1] = &i_climbr_err;
+    casadi_eval(att_ctrl_mem);
+
+    control->yaw = u_control[0];
+    control->pitch = u_control[1];
+    control->roll = u_control[2];
+    control->thrust = u_control[3];
+
+    cmd_thrust = control->thrust;
+    cmd_roll = control->roll;
+    cmd_pitch = control->pitch;
+    cmd_yaw = control->yaw;
+
+    casadi_free(att_ctrl_mem);
   }
 
   if (RATE_DO_EXECUTE(POSITION_RATE, tick)) {
