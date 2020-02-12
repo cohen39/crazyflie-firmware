@@ -7,8 +7,8 @@
 #include "position_controller.h"
 #include "controller_cci.h"
 
-#include <casadi/mem.h>
-#include <gen/f_control.h>
+#include "casadi/mem.h"
+#include "casadi/gen/f_control.h"
 
 
 #include "log.h"

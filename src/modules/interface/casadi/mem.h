@@ -67,7 +67,7 @@ typedef struct {
 } casadi_io;
 
 /* Decompress a sparsity pattern */
-inline void casadi_decompress(const int *sp, int *nrow, int *ncol,
+static inline void casadi_decompress(const int *sp, int *nrow, int *ncol,
 			      int *nnz, int *numel,
 			      const int **colind, const int **row)
 {
@@ -124,7 +124,7 @@ typedef struct {
 } casadi_mem;
 
 /* Initialize */
-inline void casadi_init(casadi_mem *mem, casadi_functions *f)
+static inline void casadi_init(casadi_mem *mem, casadi_functions *f)
 {
 	int flag;
 
@@ -168,7 +168,7 @@ inline void casadi_init(casadi_mem *mem, casadi_functions *f)
 }
 
 /* Free claimed static memory */
-inline void casadi_deinit(casadi_mem *mem)
+static inline void casadi_deinit(casadi_mem *mem)
 {
 	assert(mem != 0);
 
@@ -179,7 +179,7 @@ inline void casadi_deinit(casadi_mem *mem)
 }
 
 /* Initialize */
-inline void casadi_init_arrays(casadi_mem *mem)
+static inline void casadi_init_arrays(casadi_mem *mem)
 {
 	casadi_int i;
 	assert(mem != 0);
@@ -206,7 +206,7 @@ inline void casadi_init_arrays(casadi_mem *mem)
 
 /* Allocate dynamic memory */
 #ifndef CASADI_STATIC
-inline int casadi_alloc_arrays(casadi_mem *mem)
+static inline int casadi_alloc_arrays(casadi_mem *mem)
 {
 	/* Allocate io memory */
 	mem->in = (casadi_io *)malloc(mem->n_in * sizeof(casadi_io));
@@ -240,7 +240,7 @@ inline int casadi_alloc_arrays(casadi_mem *mem)
 
 /* Free dynamic memory */
 #ifndef CASADI_STATIC
-inline void casadi_free_arrays(casadi_mem *mem)
+static inline void casadi_free_arrays(casadi_mem *mem)
 {
 	assert(mem != 0);
 
@@ -261,7 +261,7 @@ inline void casadi_free_arrays(casadi_mem *mem)
 #endif /* CASADI_STATIC */
 
 /* Evaluate */
-inline int casadi_eval(casadi_mem *mem)
+static inline int casadi_eval(casadi_mem *mem)
 {
 	assert(mem != 0);
 	return mem->f->eval(mem->arg, mem->res, mem->iw, mem->w, mem->mem);
@@ -269,7 +269,7 @@ inline int casadi_eval(casadi_mem *mem)
 
 /* Create a memory struct with dynamic memory allocation */
 #ifndef CASADI_STATIC
-inline casadi_mem *casadi_alloc(casadi_functions *f)
+static inline casadi_mem *casadi_alloc(casadi_functions *f)
 {
 	int flag;
 
@@ -294,7 +294,7 @@ inline casadi_mem *casadi_alloc(casadi_functions *f)
 
 /* Free memory struct */
 #ifndef CASADI_STATIC
-inline void casadi_free(casadi_mem *mem)
+static inline void casadi_free(casadi_mem *mem)
 {
 	assert(mem != 0);
 

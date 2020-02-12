@@ -14,8 +14,8 @@ extern "C" {
 #endif
 
 #include <math.h>
-#include <casadi/mem.h>
-#include <gen/f_control.h>
+#include "casadi/mem.h"
+#include "casadi/gen/f_control.h"
 
 #ifndef casadi_real
 #define casadi_real double
