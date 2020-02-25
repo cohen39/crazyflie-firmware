@@ -12,7 +12,7 @@ extern "C" {
 #define casadi_int long long int
 #endif
 
-#include "casadi/mem.h"
+#include "casadi_mem.h"
 int f_control(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, void* mem);
 void f_control_incref(void);
 void f_control_decref(void);
